@@ -20,6 +20,13 @@ public class GameBoard {
     }
 
     public void draw(Graphics g) {
+        g.setColor(Color.LIGHT_GRAY);
+        for (int x = 0; x <= 10; x++) {
+            g.drawLine(x * 30, 0, x * 30, 600);
+        }
+        for (int y = 0; y <= 20; y++) {
+            g.drawLine(0, y * 30, 300, y * 30);
+        }
         // Draw fixed blocks
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 10; x++) {
@@ -47,6 +54,9 @@ public class GameBoard {
             case 5: currentBlock = new TBlock(); break;
             case 6: currentBlock = new ZBlock(); break;
         }
+        /*if (!isValidPosition(currentBlock)) {
+            gameOver = true;
+        }*/
     }
 
     public boolean isValidPosition(Block block) {
@@ -61,6 +71,7 @@ public class GameBoard {
         for (Point p : block.getAbsolutePoints()) {
             grid[p.y][p.x] = 1;
         }
+        clearFullLines();
     }
 
     public void moveBlock(int dx, int dy) {
@@ -75,6 +86,23 @@ public class GameBoard {
         if (!isValidPosition(currentBlock)) {
             // basic wall kick not implemented
             currentBlock.rotateBack();
+        }
+    }
+    private void clearFullLines() {
+        for (int y = 0; y < 20; y++) {
+            boolean full = true;
+            for (int x = 0; x < 10; x++) {
+                if (grid[y][x] == 0) {
+                    full = false;
+                    break;
+                }
+            }
+            if (full) {
+                for (int ty = y; ty > 0; ty--) {
+                    System.arraycopy(grid[ty - 1], 0, grid[ty], 0, 10);
+                }
+                grid[0] = new int[10];
+            }
         }
     }
 }
