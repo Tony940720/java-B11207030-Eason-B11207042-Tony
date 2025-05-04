@@ -5,6 +5,7 @@ public class GameBoard {
     private int[][] grid = new int[20][10];
     private Block currentBlock;
     private Random random = new Random();
+    private int score = 0;
 
     public GameBoard() {
         spawnNewBlock();
@@ -54,9 +55,7 @@ public class GameBoard {
             case 5: currentBlock = new TBlock(); break;
             case 6: currentBlock = new ZBlock(); break;
         }
-        /*if (!isValidPosition(currentBlock)) {
-            gameOver = true;
-        }*/
+        
     }
 
     public boolean isValidPosition(Block block) {
@@ -88,7 +87,9 @@ public class GameBoard {
             currentBlock.rotateBack();
         }
     }
+
     private void clearFullLines() {
+        int linesCleared = 0;
         for (int y = 0; y < 20; y++) {
             boolean full = true;
             for (int x = 0; x < 10; x++) {
@@ -98,11 +99,23 @@ public class GameBoard {
                 }
             }
             if (full) {
+                linesCleared++;
                 for (int ty = y; ty > 0; ty--) {
                     System.arraycopy(grid[ty - 1], 0, grid[ty], 0, 10);
                 }
-                grid[0] = new int[10];
+                grid[0] = new int[10]; // 最上層清空
             }
         }
+
+        switch (linesCleared) {
+            case 1 -> score += 100;
+            case 2 -> score += 300;
+            case 3 -> score += 500;
+            case 4 -> score += 800;
+        }
+    }
+
+    public int getScore() {
+        return score;
     }
 }
