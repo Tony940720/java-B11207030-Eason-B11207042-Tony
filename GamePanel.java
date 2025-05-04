@@ -35,6 +35,12 @@ public class GamePanel extends JPanel {
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Score: " + board.getScore(), 320, 25);
+        //GameOver
+        if (board.isGameOver()) {
+            g.setColor(Color.RED);
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.drawString("GAME OVER",321, 50);
+        }
     }
 
     private void adjustSpeed() {
