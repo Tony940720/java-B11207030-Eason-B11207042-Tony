@@ -9,11 +9,13 @@ public class GameBoard {
 
     private int[][] grid = new int[BOARD_HEIGHT][BOARD_WIDTH];
     private Block currentBlock;
+    private Block nextBlock;
     private Random random = new Random();
     private int score = 0;
     private boolean gameOver = false;
 
     public GameBoard() {
+        nextBlock = generateRandomBlock();
         spawnNewBlock();
     }
 
@@ -25,17 +27,6 @@ public class GameBoard {
             placeBlock(currentBlock);
             spawnNewBlock();
         }
-    }
-
-    private Color getBlockColor(Block block) {
-        if (block instanceof IBlock) return Color.CYAN;
-        if (block instanceof JBlock) return Color.BLUE;
-        if (block instanceof LBlock) return Color.ORANGE;
-        if (block instanceof OBlock) return Color.YELLOW;
-        if (block instanceof SBlock) return Color.GREEN;
-        if (block instanceof TBlock) return Color.MAGENTA;
-        if (block instanceof ZBlock) return Color.RED;
-        return Color.WHITE;
     }
 
     public void draw(Graphics g) {
@@ -52,20 +43,31 @@ public class GameBoard {
                 if (grid[y][x] != 0) {
                     g.setColor(getBlockColorByType(grid[y][x]));
                     g.fillRect(x * CELL_SIZE, y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-                    //g.setColor(Color.BLACK);
-                    //g.drawRect(x * CELL_SIZE, y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    g.setColor(Color.BLACK);
+                    g.drawRect(x * CELL_SIZE, y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                 }
             }
         }
         // Draw current block
-        if (currentBlock != null) {
-            g.setColor(getBlockColor(currentBlock));
+        if (currentBlock != null) {  
             for (Point p : currentBlock.getAbsolutePoints()) {
+                g.setColor(getBlockColor(currentBlock));
                 g.fillRect(p.x * CELL_SIZE, p.y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-                //g.setColor(Color.BLACK);
-                //g.drawRect(p.x * CELL_SIZE, p.y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                g.setColor(Color.BLACK);
+                g.drawRect(p.x * CELL_SIZE, p.y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
             }
         }
+    }
+
+    private Color getBlockColor(Block block) {
+        if (block instanceof IBlock) return Color.CYAN;
+        if (block instanceof JBlock) return Color.BLUE;
+        if (block instanceof LBlock) return Color.ORANGE;
+        if (block instanceof OBlock) return Color.YELLOW;
+        if (block instanceof SBlock) return Color.GREEN;
+        if (block instanceof TBlock) return Color.MAGENTA;
+        if (block instanceof ZBlock) return Color.RED;
+        return Color.WHITE;
     }
 
     // 為固定方塊提供類型對應的顏色
@@ -82,9 +84,29 @@ public class GameBoard {
         };
     }
 
+    // 為固定方塊分配類型值
+    private int getBlockType(Block block) {
+        if (block instanceof IBlock) return 1;
+        if (block instanceof JBlock) return 2;
+        if (block instanceof LBlock) return 3;
+        if (block instanceof OBlock) return 4;
+        if (block instanceof SBlock) return 5;
+        if (block instanceof TBlock) return 6;
+        if (block instanceof ZBlock) return 7;
+        return 0;
+    }
+
     public void spawnNewBlock() {
+        currentBlock = nextBlock;
+        nextBlock = generateRandomBlock();
+        if (currentBlock == null || !isValidPosition(currentBlock)) {
+            gameOver = true;
+        }
+    }
+
+    private Block generateRandomBlock() {
         int type = random.nextInt(7);
-        currentBlock = switch (type) {
+        return switch (type) {
             case 0 -> new IBlock();
             case 1 -> new JBlock();
             case 2 -> new LBlock();
@@ -94,10 +116,12 @@ public class GameBoard {
             case 6 -> new ZBlock();
             default -> null;
         };
-        if (currentBlock == null || !isValidPosition(currentBlock)) {
-            gameOver = true;
-        }
     }
+    
+    public Block getNextBlock() {
+        return nextBlock;
+    }
+    
 
     public boolean isValidPosition(Block block) {
         if (block == null || block.getAbsolutePoints() == null) return false;
@@ -116,18 +140,6 @@ public class GameBoard {
             if (p.y <= 0) gameOver = true; // 方塊固定在頂部，遊戲結束
         }
         clearFullLines();
-    }
-
-    // 為固定方塊分配類型值
-    private int getBlockType(Block block) {
-        if (block instanceof IBlock) return 1;
-        if (block instanceof JBlock) return 2;
-        if (block instanceof LBlock) return 3;
-        if (block instanceof OBlock) return 4;
-        if (block instanceof SBlock) return 5;
-        if (block instanceof TBlock) return 6;
-        if (block instanceof ZBlock) return 7;
-        return 0;
     }
 
     public void moveBlock(int dx, int dy) {
