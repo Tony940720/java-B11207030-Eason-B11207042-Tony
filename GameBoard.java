@@ -14,6 +14,7 @@ public class GameBoard {
     private Random random = new Random();
     private int score = 0;
     private boolean gameOver = false;
+    //消除動畫用參數
     private java.util.List<Integer> linesToClear = new ArrayList<>();
     private long lineClearStartTime = 0;
     private static final int LINE_CLEAR_DELAY = 500; 
@@ -151,8 +152,8 @@ public class GameBoard {
     public boolean isValidPosition(Block block) {
         if (block == null || block.getAbsolutePoints() == null) return false;
         for (Point p : block.getAbsolutePoints()) {
-            if (p == null || p.x < 0 || p.x >= BOARD_WIDTH || p.y < 0 || p.y >= BOARD_HEIGHT) return false;
-            if (grid[p.y][p.x] != 0) return false;
+            if (p == null || p.x < 0 || p.x >= BOARD_WIDTH || p.y >= BOARD_HEIGHT) return false;
+            if (p.y >= 0 && grid[p.y][p.x] != 0) return false;
         }
         return true;
     }
@@ -161,7 +162,7 @@ public class GameBoard {
         if (block == null) return;
         int blockType = getBlockType(block); // 獲取方塊類型
         for (Point p : block.getAbsolutePoints()) {
-            grid[p.y][p.x] = blockType;
+            if (p.y >= 0) grid[p.y][p.x] = blockType;
             if (p.y <= 0) gameOver = true; // 方塊固定在頂部，遊戲結束
         }
         clearFullLines();

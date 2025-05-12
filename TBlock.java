@@ -5,7 +5,7 @@ public class TBlock extends Block {
         shape = new Point[] {
             new Point(-1, 0), new Point(0, 0), new Point(1, 0), new Point(0, 1)
         };
-        position = new Point(4, 0);
+        position = new Point(4, -2);
     }
 
     public void rotate() {

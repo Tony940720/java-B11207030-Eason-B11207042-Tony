@@ -66,7 +66,7 @@ public class GamePanel extends JPanel {
             for (Point p : next.getAbsolutePoints()) {
                 // 偏移：將原始 x 向右、y 向下，畫在固定位置（靠右側）
                 int drawX = (p.x - 3) * CELL_SIZE + 330;  // x 移到右側顯示區域
-                int drawY = (p.y + 3) * CELL_SIZE;        // y 往下再移一格
+                int drawY = (p.y + 3) * CELL_SIZE + 60;        // y 往下再移一格
                 g.setColor(getBlockColor(next));
                 g.fillRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
                 g.setColor(Color.BLACK);
