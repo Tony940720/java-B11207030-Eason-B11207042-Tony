@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class GameBoard {
@@ -13,6 +14,10 @@ public class GameBoard {
     private Random random = new Random();
     private int score = 0;
     private boolean gameOver = false;
+    private java.util.List<Integer> linesToClear = new ArrayList<>();
+    private long lineClearStartTime = 0;
+    private static final int LINE_CLEAR_DELAY = 500; 
+    private boolean isClearingLines = false;
 
     public GameBoard() {
         nextBlock = generateRandomBlock();
@@ -21,6 +26,15 @@ public class GameBoard {
 
     public void update() {
         if (gameOver) return;
+
+        if (isClearingLines) {
+            if (System.currentTimeMillis() - lineClearStartTime >= LINE_CLEAR_DELAY) {
+                clearMarkedLines(); // 真正清除
+                isClearingLines = false;
+            }
+            return;
+        }
+
         currentBlock.move(0, 1);
         if (!isValidPosition(currentBlock)) {
             currentBlock.move(0, -1);
@@ -30,21 +44,28 @@ public class GameBoard {
     }
 
     public void draw(Graphics g) {
+        int offsetY = 60;
+
         g.setColor(Color.LIGHT_GRAY);
         for (int x = 0; x <= BOARD_WIDTH; x++) {
-            g.drawLine(x * CELL_SIZE, 0, x * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE);
+            g.drawLine(x * CELL_SIZE, offsetY, x * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE + offsetY);
         }
         for (int y = 0; y <= BOARD_HEIGHT; y++) {
-            g.drawLine(0, y * CELL_SIZE, BOARD_WIDTH * CELL_SIZE, y * CELL_SIZE);
+            g.drawLine(0, y * CELL_SIZE + offsetY, BOARD_WIDTH * CELL_SIZE, y * CELL_SIZE + offsetY);
         }
         // Draw fixed blocks
         for (int y = 0; y < BOARD_HEIGHT; y++) {
             for (int x = 0; x < BOARD_WIDTH; x++) {
                 if (grid[y][x] != 0) {
-                    g.setColor(getBlockColorByType(grid[y][x]));
-                    g.fillRect(x * CELL_SIZE, y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    if (linesToClear.contains(y) && (System.currentTimeMillis() / 100) % 2 == 0) {
+                        g.setColor(Color.WHITE); // 閃爍效果
+                    } else {
+                        g.setColor(getBlockColorByType(grid[y][x]));
+                    }
+                    g.fillRect(x * CELL_SIZE, y * CELL_SIZE + offsetY, BLOCK_SIZE, BLOCK_SIZE);
+                    g.fillRect(x * CELL_SIZE, y * CELL_SIZE + offsetY, BLOCK_SIZE, BLOCK_SIZE);
                     g.setColor(Color.BLACK);
-                    g.drawRect(x * CELL_SIZE, y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    g.drawRect(x * CELL_SIZE, y * CELL_SIZE + offsetY, BLOCK_SIZE, BLOCK_SIZE);
                 }
             }
         }
@@ -52,9 +73,9 @@ public class GameBoard {
         if (currentBlock != null) {  
             for (Point p : currentBlock.getAbsolutePoints()) {
                 g.setColor(getBlockColor(currentBlock));
-                g.fillRect(p.x * CELL_SIZE, p.y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                g.fillRect(p.x * CELL_SIZE, p.y * CELL_SIZE + offsetY, BLOCK_SIZE, BLOCK_SIZE);
                 g.setColor(Color.BLACK);
-                g.drawRect(p.x * CELL_SIZE, p.y * CELL_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                g.drawRect(p.x * CELL_SIZE, p.y * CELL_SIZE + offsetY, BLOCK_SIZE, BLOCK_SIZE);
             }
         }
     }
@@ -203,7 +224,7 @@ public class GameBoard {
     }
 
     private void clearFullLines() {
-        int linesCleared = 0;
+        linesToClear.clear();
         for (int y = 0; y < BOARD_HEIGHT; y++) {
             boolean full = true;
             for (int x = 0; x < BOARD_WIDTH; x++) {
@@ -212,18 +233,25 @@ public class GameBoard {
                     break;
                 }
             }
-            if (full) {
-                linesCleared++;
-                for (int ty = y; ty > 0; ty--) {
-                    System.arraycopy(grid[ty - 1], 0, grid[ty], 0, BOARD_WIDTH);
-                }
-                grid[0] = new int[BOARD_WIDTH];
-            }
+            if (full) linesToClear.add(y);
         }
-        
-        if (linesCleared > 0) {
+
+        if (!linesToClear.isEmpty()) {
+            lineClearStartTime = System.currentTimeMillis();
+            isClearingLines = true;
             SoundPlayer.playSoundOnce("C:/d槽/java/java-B11207030-Eason-B11207042-Tony/music/clear_line.wav");
         }
+    }
+
+    private void clearMarkedLines() {
+        int linesCleared = linesToClear.size();
+        for (int y : linesToClear) {
+            for (int ty = y; ty > 0; ty--) {
+                grid[ty] = grid[ty - 1].clone();
+            }
+            grid[0] = new int[BOARD_WIDTH];
+        }
+    
         score += switch (linesCleared) {
             case 1 -> 100;
             case 2 -> 300;
@@ -231,7 +259,10 @@ public class GameBoard {
             case 4 -> 800;
             default -> 0;
         };
+    
+        linesToClear.clear();
     }
+    
 
     public int getScore() {
         return score;
