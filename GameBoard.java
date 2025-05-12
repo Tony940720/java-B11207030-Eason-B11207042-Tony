@@ -220,6 +220,10 @@ public class GameBoard {
                 grid[0] = new int[BOARD_WIDTH];
             }
         }
+        
+        if (linesCleared > 0) {
+            SoundPlayer.playSoundOnce("C:/d槽/java/java-B11207030-Eason-B11207042-Tony/music/clear_line.wav");
+        }
         score += switch (linesCleared) {
             case 1 -> 100;
             case 2 -> 300;
@@ -236,4 +240,5 @@ public class GameBoard {
     public boolean isGameOver() {
         return gameOver;
     }
+
 }

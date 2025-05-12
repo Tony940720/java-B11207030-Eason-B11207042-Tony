@@ -7,6 +7,8 @@ public class GamePanel extends JPanel {
     
     private GameBoard board;
     private javax.swing.Timer gravityTimer;
+    private SoundPlayer backgroundMusic;
+    private boolean gameOverSoundPlayed = false;
 
     public GamePanel() {
         this.setFocusable(true);
@@ -15,9 +17,18 @@ public class GamePanel extends JPanel {
     }
 
     public void startGame() {
-        // 控制畫面刷新速度（每 16 毫秒）
+        backgroundMusic = new SoundPlayer("C:/d槽/java/java-B11207030-Eason-B11207042-Tony/music/tetris_theme.wav");
+        backgroundMusic.start();
+        // 控制畫面刷新速度（每 1 毫秒）
         javax.swing.Timer repaintTimer = new javax.swing.Timer(1, e -> {
-            repaint(); 
+            repaint();
+            if (board.isGameOver()) {
+                if (!gameOverSoundPlayed) {
+                    stopBackgroundMusic(); // 停止背景音樂
+                    SoundPlayer.playSoundOnce("C:/d槽/java/java-B11207030-Eason-B11207042-Tony/music/game-over.wav"); // 播放結束音效
+                    gameOverSoundPlayed = true;
+                } 
+            }
         });
         repaintTimer.start();
     
@@ -91,4 +102,9 @@ public class GamePanel extends JPanel {
         return Color.WHITE;
     }
     
+    public void stopBackgroundMusic() {
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+        }
+    }
 }
