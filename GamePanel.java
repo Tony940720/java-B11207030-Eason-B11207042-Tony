@@ -16,7 +16,7 @@ public class GamePanel extends JPanel {
 
     public void startGame() {
         // 控制畫面刷新速度（每 16 毫秒）
-        javax.swing.Timer repaintTimer = new javax.swing.Timer(16, e -> {
+        javax.swing.Timer repaintTimer = new javax.swing.Timer(1, e -> {
             repaint(); 
         });
         repaintTimer.start();

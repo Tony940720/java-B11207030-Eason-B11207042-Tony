@@ -118,6 +118,10 @@ public class GameBoard {
         };
     }
     
+    public Block getCurrentBlock() {
+        return currentBlock;
+    }
+
     public Block getNextBlock() {
         return nextBlock;
     }
@@ -164,6 +168,37 @@ public class GameBoard {
                 currentBlock.move(-offset.x, -offset.y);
             }
             currentBlock.rotateBack();
+        }
+    }
+
+    public void rotateBlockBack() {
+        if (currentBlock == null) return;
+        currentBlock.rotateBack();
+        if (!isValidPosition(currentBlock)) {
+            // 嘗試 wall kick
+            Point[] kickOffsets = new Point[]{
+                new Point(0, 0), new Point(-1, 0), new Point(1, 0), new Point(-2, 0), new Point(2, 0)
+            };
+            for (Point offset : kickOffsets) {
+                currentBlock.move(offset.x, offset.y);
+                if (isValidPosition(currentBlock)) return;
+                currentBlock.move(-offset.x, -offset.y);
+            }
+            currentBlock.rotate(); // 恢復原狀
+        }
+    }
+
+    public void dropBlock() {
+        if (gameOver || currentBlock == null) return;
+    
+        while (true) {
+            currentBlock.move(0, 1);
+            if (!isValidPosition(currentBlock)) {
+                currentBlock.move(0, -1);
+                placeBlock(currentBlock);
+                spawnNewBlock();
+                break;
+            }
         }
     }
 
