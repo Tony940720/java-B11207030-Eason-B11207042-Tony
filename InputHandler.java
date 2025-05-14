@@ -17,6 +17,7 @@ public class InputHandler extends KeyAdapter {
             case KeyEvent.VK_S -> board.moveBlock(0, 1);
             case KeyEvent.VK_Q -> board.rotateBlockBack();
             case KeyEvent.VK_E -> board.rotateBlock();
+            case KeyEvent.VK_W -> board.holdCurrentBlock();
             case KeyEvent.VK_SPACE -> {
             // 快速下落到底
                 board.dropBlock();

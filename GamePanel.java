@@ -56,24 +56,48 @@ public class GamePanel extends JPanel {
             g.drawString("GAME OVER",321, 50);
         }
         //nextblock
+//         Block next = board.getNextBlock();
+//         if (next != null) {
+//             g.setColor(Color.BLACK);
+//             g.setFont(new Font("Arial", Font.BOLD, 16));
+//             g.drawString("Next:", 330, 80);  
+// 
+//             
+//             for (Point p : next.getAbsolutePoints()) {
+//                 // 偏移：將原始 x 向右、y 向下，畫在固定位置（靠右側）
+//                 int drawX = (p.x - 3) * CELL_SIZE + 330;  // x 移到右側顯示區域
+//                 int drawY = (p.y + 3) * CELL_SIZE + 60;        // y 往下再移一格
+//                 g.setColor(getBlockColor(next));
+//                 g.fillRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
+//                 g.setColor(Color.BLACK);
+//                 g.drawRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
+//             }
+//         }
+          // Next block display
         Block next = board.getNextBlock();
         if (next != null) {
             g.setColor(Color.BLACK);
             g.setFont(new Font("Arial", Font.BOLD, 16));
-            g.drawString("Next:", 330, 80);  
-
+            g.drawString("Next:", 330, 80);
             
-            for (Point p : next.getAbsolutePoints()) {
-                // 偏移：將原始 x 向右、y 向下，畫在固定位置（靠右側）
-                int drawX = (p.x - 3) * CELL_SIZE + 330;  // x 移到右側顯示區域
-                int drawY = (p.y + 3) * CELL_SIZE + 60;        // y 往下再移一格
+            // Calculate center offset for next block preview
+            int minX = 0, minY = 0;
+            for (Point p : next.shape) {
+                if (p.x < minX) minX = p.x;
+                if (p.y < minY) minY = p.y;
+            }
+            int offsetX = -minX * CELL_SIZE + 330;
+            int offsetY = -minY * CELL_SIZE + 100;
+            
+            for (Point p : next.shape) {
                 g.setColor(getBlockColor(next));
-                g.fillRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
+                g.fillRect(offsetX + p.x * CELL_SIZE, offsetY + p.y * CELL_SIZE, 
+                          BLOCK_SIZE, BLOCK_SIZE);
                 g.setColor(Color.BLACK);
-                g.drawRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
+                g.drawRect(offsetX + p.x * CELL_SIZE, offsetY + p.y * CELL_SIZE, 
+                          BLOCK_SIZE, BLOCK_SIZE);
             }
         }
-
     }      
 
     private void adjustSpeed() {

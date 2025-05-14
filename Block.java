@@ -18,4 +18,9 @@ public abstract class Block {
         }
         return result;
     }
+    public void resetPosition() {
+        this.position.x = 3;
+        this.position.y = 0;
+    }
+ 
 }

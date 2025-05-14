@@ -19,6 +19,9 @@ public class GameBoard {
     private long lineClearStartTime = 0;
     private static final int LINE_CLEAR_DELAY = 500; 
     private boolean isClearingLines = false;
+    
+    private Block holdBlock = null;
+    private boolean holdUsed = false;
 
     public GameBoard() {
         nextBlock = generateRandomBlock();
@@ -79,6 +82,18 @@ public class GameBoard {
                 g.drawRect(p.x * CELL_SIZE, p.y * CELL_SIZE + offsetY, BLOCK_SIZE, BLOCK_SIZE);
             }
         }
+        // hold
+        if (holdBlock != null) {
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 16));
+            g.drawString("Hold:", 320, 180);
+            for (Point p : holdBlock.shape) {  // Use shape instead of getShape()
+                g.setColor(getBlockColor(holdBlock));  // Use proper color
+                g.fillRect(320 + p.x * 20, 180 + p.y * 20, 18, 18);
+                g.setColor(Color.BLACK);
+                g.drawRect(320 + p.x * 20, 180 + p.y * 20, 18, 18);
+            }
+        }
     }
 
     private Color getBlockColor(Block block) {
@@ -121,9 +136,26 @@ public class GameBoard {
     public void spawnNewBlock() {
         currentBlock = nextBlock;
         nextBlock = generateRandomBlock();
+        holdUsed = false;
         if (currentBlock == null || !isValidPosition(currentBlock)) {
             gameOver = true;
         }
+    }
+    
+    public void holdCurrentBlock() {
+        if (holdUsed) return;
+    
+        if (holdBlock == null) {
+            holdBlock = currentBlock;
+            spawnNewBlock();
+        } 
+        else {
+            Block temp = currentBlock;
+            currentBlock = holdBlock;
+            holdBlock = temp;
+            currentBlock.resetPosition(); // 重設位置，確保方塊從頂部開始
+        }
+       holdUsed = true;
     }
 
     private Block generateRandomBlock() {
