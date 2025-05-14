@@ -73,7 +73,7 @@ public class GamePanel extends JPanel {
 //                 g.drawRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
 //             }
 //         }
-          // Next block display
+        // Next block display
         Block next = board.getNextBlock();
         if (next != null) {
             g.setColor(Color.BLACK);
@@ -91,6 +91,30 @@ public class GamePanel extends JPanel {
             
             for (Point p : next.shape) {
                 g.setColor(getBlockColor(next));
+                g.fillRect(offsetX + p.x * CELL_SIZE, offsetY + p.y * CELL_SIZE, 
+                          BLOCK_SIZE, BLOCK_SIZE);
+                g.setColor(Color.BLACK);
+                g.drawRect(offsetX + p.x * CELL_SIZE, offsetY + p.y * CELL_SIZE, 
+                          BLOCK_SIZE, BLOCK_SIZE);
+            }
+        }
+        // Hold block display
+        Block holdBlock = board.getHoldBlock();
+        if (holdBlock != null) {
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 16));
+            g.drawString("Hold:", 330, 180);
+            Point[] shape = holdBlock.getShape();
+            // Calculate center offset
+            int minX = 0, minY = 0;
+            for (Point p : holdBlock.shape) {
+                if (p.x < minX) minX = p.x;
+                if (p.y < minY) minY = p.y;
+            }
+            int offsetX = -minX * CELL_SIZE + 330;
+            int offsetY = -minY * CELL_SIZE + 200;
+            for (Point p : holdBlock.shape) {  // Use shape instead of getShape()
+                g.setColor(getBlockColor(holdBlock));  // Use proper color
                 g.fillRect(offsetX + p.x * CELL_SIZE, offsetY + p.y * CELL_SIZE, 
                           BLOCK_SIZE, BLOCK_SIZE);
                 g.setColor(Color.BLACK);

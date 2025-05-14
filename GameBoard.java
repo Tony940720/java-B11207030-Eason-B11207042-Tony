@@ -82,18 +82,6 @@ public class GameBoard {
                 g.drawRect(p.x * CELL_SIZE, p.y * CELL_SIZE + offsetY, BLOCK_SIZE, BLOCK_SIZE);
             }
         }
-        // hold
-        if (holdBlock != null) {
-            g.setColor(Color.BLACK);
-            g.setFont(new Font("Arial", Font.BOLD, 16));
-            g.drawString("Hold:", 320, 180);
-            for (Point p : holdBlock.shape) {  // Use shape instead of getShape()
-                g.setColor(getBlockColor(holdBlock));  // Use proper color
-                g.fillRect(320 + p.x * 20, 180 + p.y * 20, 18, 18);
-                g.setColor(Color.BLACK);
-                g.drawRect(320 + p.x * 20, 180 + p.y * 20, 18, 18);
-            }
-        }
     }
 
     private Color getBlockColor(Block block) {
@@ -170,6 +158,10 @@ public class GameBoard {
             case 6 -> new ZBlock();
             default -> null;
         };
+    }
+    
+    public Block getHoldBlock() {
+        return holdBlock;
     }
     
     public Block getCurrentBlock() {
