@@ -104,6 +104,7 @@ public class GameBoard {
             case 5 -> Color.GREEN;   // SBlock
             case 6 -> Color.MAGENTA; // TBlock
             case 7 -> Color.RED;     // ZBlock
+            case 8 -> Color.DARK_GRAY;//newRow
             default -> Color.WHITE;
         };
     }
@@ -263,7 +264,7 @@ public class GameBoard {
         if (!linesToClear.isEmpty()) {
             lineClearStartTime = System.currentTimeMillis();
             isClearingLines = true;
-            SoundPlayer.playSoundOnce("C:/d槽/java/java-B11207030-Eason-B11207042-Tony/music/clear_line.wav");
+            SoundPlayer.playSoundOnce("../java-B11207030-Eason-B11207042-Tony/music/clear_line.wav");
         }
     }
 
@@ -287,6 +288,21 @@ public class GameBoard {
         linesToClear.clear();
     }
     
+    public void insertBottomRow() {
+        // 將所有行上移
+        for (int y = 0; y < grid.length - 1; y++) {
+            grid[y] = grid[y + 1].clone();
+        }
+    
+        // 新增一行滿行但有一格是空的（用 8 代表 Challenge block）
+        int[] newRow = new int[grid[0].length];
+        int hole = new Random().nextInt(newRow.length);
+        for (int x = 0; x < newRow.length; x++) {
+            newRow[x] = (x == hole) ? 0 : 8;
+        }
+        grid[grid.length - 1] = newRow;
+    }
+
 
     public int getScore() {
         return score;
