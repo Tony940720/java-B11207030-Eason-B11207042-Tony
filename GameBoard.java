@@ -18,8 +18,7 @@ public class GameBoard {
     private java.util.List<Integer> linesToClear = new ArrayList<>();
     private long lineClearStartTime = 0;
     private static final int LINE_CLEAR_DELAY = 500; 
-    private boolean isClearingLines = false;
-    
+    private boolean isClearingLines = false;    
     private Block holdBlock = null;
     private boolean holdUsed = false;
 

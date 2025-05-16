@@ -20,8 +20,8 @@ public abstract class Block {
     }
     
     public void resetPosition() {
-        this.position.x = 3;
-        this.position.y = 0;
+        this.position.x = 4;
+        this.position.y = -2;
     }
     
     public Point[] getShape() {
