@@ -295,5 +295,17 @@ public class GameBoard {
     public boolean isGameOver() {
         return gameOver;
     }
+    
+    //mode
+    private String mode = "Normal"; // 儲存模式
+   
+    public GameBoard(String mode) {
+        this(); // 呼叫原本的無參數建構子
+        this.mode = mode;
+    }
+   
+    public String getMode() {
+        return mode;
+    }
 
 }

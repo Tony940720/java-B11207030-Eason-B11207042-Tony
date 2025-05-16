@@ -29,6 +29,15 @@ public class SoundPlayer {
         }).start();
     }
     
+    public void setVolume(int percent) {
+        if (clip != null && clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            float min = volume.getMinimum();
+            float max = volume.getMaximum();
+            float gain = min + (max - min) * (percent / 100.0f);
+            volume.setValue(gain);
+        }
+    }
 
     public void start() {
         if (clip != null) clip.start();
