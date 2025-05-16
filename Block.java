@@ -18,4 +18,14 @@ public abstract class Block {
         }
         return result;
     }
+    
+    public void resetPosition() {
+        this.position.x = 4;
+        this.position.y = -2;
+    }
+    
+    public Point[] getShape() {
+       return shape;
+    }
+    
 }

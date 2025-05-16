@@ -18,7 +18,9 @@ public class GameBoard {
     private java.util.List<Integer> linesToClear = new ArrayList<>();
     private long lineClearStartTime = 0;
     private static final int LINE_CLEAR_DELAY = 500; 
-    private boolean isClearingLines = false;
+    private boolean isClearingLines = false;    
+    private Block holdBlock = null;
+    private boolean holdUsed = false;
 
     public GameBoard() {
         nextBlock = generateRandomBlock();
@@ -121,9 +123,26 @@ public class GameBoard {
     public void spawnNewBlock() {
         currentBlock = nextBlock;
         nextBlock = generateRandomBlock();
+        holdUsed = false;
         if (currentBlock == null || !isValidPosition(currentBlock)) {
             gameOver = true;
         }
+    }
+    
+    public void holdCurrentBlock() {
+        if (holdUsed) return;
+    
+        if (holdBlock == null) {
+            holdBlock = currentBlock;
+            spawnNewBlock();
+        } 
+        else {
+            Block temp = currentBlock;
+            currentBlock = holdBlock;
+            holdBlock = temp;
+            currentBlock.resetPosition(); // 重設位置，確保方塊從頂部開始
+        }
+       holdUsed = true;
     }
 
     private Block generateRandomBlock() {
@@ -138,6 +157,10 @@ public class GameBoard {
             case 6 -> new ZBlock();
             default -> null;
         };
+    }
+    
+    public Block getHoldBlock() {
+        return holdBlock;
     }
     
     public Block getCurrentBlock() {
