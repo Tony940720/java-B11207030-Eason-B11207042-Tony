@@ -264,7 +264,7 @@ public class GameBoard {
         if (!linesToClear.isEmpty()) {
             lineClearStartTime = System.currentTimeMillis();
             isClearingLines = true;
-            SoundPlayer.playSoundOnce("../java-B11207030-Eason-B11207042-Tony/music/clear_line.wav");
+            SoundPlayer.playSoundOnce("java-B11207030-Eason-B11207042-Tony/music/clear_line.wav");
         }
     }
 

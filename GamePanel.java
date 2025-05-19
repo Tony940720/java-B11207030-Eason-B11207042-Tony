@@ -6,7 +6,7 @@ public class GamePanel extends JPanel implements KeyListener {
     private static final int CELL_SIZE = 30;
     private static final int BLOCK_SIZE = 28;
 
-    private enum GameState { MENU, PLAYING, GAME_OVER }
+    private enum GameState { MENU, PLAYING, PAUSED, GAME_OVER }
     private GameState gameState = GameState.MENU;
 
     private GameBoard board;
@@ -18,6 +18,7 @@ public class GamePanel extends JPanel implements KeyListener {
     private int selectedOption = 0;
     private int volumePercent = 100;
     private int speedLevel = 1; // 0: 慢, 1: 中, 2: 快
+    private final int[] slowDelays = {500, 400, 300, 200, 100};
     private String mode = "Normal";
 
     public GamePanel() {
@@ -28,12 +29,12 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     public void startGame() {
-        backgroundMusic = new SoundPlayer("C:/d槽/java/java-B11207030-Eason-B11207042-Tony/music/tetris_theme.wav", volumePercent);
+        backgroundMusic = new SoundPlayer("java-B11207030-Eason-B11207042-Tony/music/tetris_theme.wav", volumePercent);
 
         javax.swing.Timer repaintTimer = new javax.swing.Timer(1, e -> repaint());
         repaintTimer.start();
 
-        gravityTimer = new javax.swing.Timer(getInitialSpeed(), new ActionListener() {
+        gravityTimer = new javax.swing.Timer(getAdjustedDelay(0), new ActionListener() {
             private long lastRowInsertTime = System.currentTimeMillis();
 
             @Override
@@ -53,7 +54,7 @@ public class GamePanel extends JPanel implements KeyListener {
                         gameState = GameState.GAME_OVER;
                         stopBackgroundMusic();
                         if (!gameOverSoundPlayed) {
-                            SoundPlayer.playSoundOnce("../java-B11207030-Eason-B11207042-Tony/music/game-over.wav");
+                            SoundPlayer.playSoundOnce("java-B11207030-Eason-B11207042-Tony/music/game-over.wav");
                             gameOverSoundPlayed = true;
                         }
                     }
@@ -64,23 +65,25 @@ public class GamePanel extends JPanel implements KeyListener {
         gravityTimer.start();
     }
 
-    private int getInitialSpeed() {
-        return switch (speedLevel) {
-            case 0 -> 600;
-            case 1 -> 400;
-            case 2 -> 200;
-            default -> 400;
-        };
-    }
-
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         switch (gameState) {
             case MENU -> drawMenu(g);
-            case PLAYING -> drawGame(g);
+            case PLAYING, PAUSED -> drawGame(g);
             case GAME_OVER -> drawGameOver(g);
+        }
+        // 額外處理暫停畫面
+        if (gameState == GameState.PAUSED) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setColor(new Color(0, 0, 0, 150)); // 半透明黑色遮罩
+            g2d.fillRect(0, 0, getWidth(), getHeight());
+
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial", Font.BOLD, 36));
+            g2d.drawString("PAUSED", getWidth() / 2 - 80, getHeight() / 2);
+            g2d.dispose();
         }
     }
 
@@ -169,19 +172,32 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
+    private int getAdjustedDelay(int score) {
+        int index;
+        if (score < 500) index = 0;
+        else if (score < 1000) index = 1;
+        else if (score < 1500) index = 2;
+        else if (score < 2000) index = 3;
+        else index = 4;
+
+        double multiplier = switch (speedLevel) {
+            case 0 -> 1.0 * 1.5;     // Slow
+            case 1 -> 1.0 ;         // Normal
+            case 2 -> 1.0 / 1.5; // Fast (Normal 的 1.5 倍)
+            default -> 1.0;
+        };
+        return (int) (slowDelays[index] * multiplier);
+    }
+
     private void adjustSpeed() {
         int score = board.getScore();
-        int newDelay;
-        if (score < 200) newDelay = 500;
-        else if (score < 500) newDelay = 400;
-        else if (score < 1000) newDelay = 300;
-        else if (score < 1500) newDelay = 200;
-        else newDelay = 100;
+        int newDelay = getAdjustedDelay(score);
 
         if (gravityTimer.getDelay() != newDelay) {
             gravityTimer.setDelay(newDelay);
         }
     }
+
 
     private Color getBlockColor(Block block) {
         if (block instanceof IBlock) return Color.CYAN;
@@ -202,6 +218,18 @@ public class GamePanel extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_P) {
+                if (gameState == GameState.PLAYING) {
+                    gameState = GameState.PAUSED;
+                    gravityTimer.stop();
+                    return; // 結束處理，避免再跑下面 PLAYING 的 switch
+                } else if (gameState == GameState.PAUSED) {
+                    gameState = GameState.PLAYING;
+                    gravityTimer.start();
+                    return;
+                }
+            }
+
         switch (gameState) {
             case MENU -> {
                 switch (e.getKeyCode()) {
@@ -230,7 +258,6 @@ public class GamePanel extends JPanel implements KeyListener {
                             board = new GameBoard(mode);
                             gameOverSoundPlayed = false;
                             gameState = GameState.PLAYING;
-                            backgroundMusic = new SoundPlayer("../java-B11207030-Eason-B11207042-Tony/music/tetris_theme.wav", volumePercent);
                         }
                     }
                 }
@@ -241,11 +268,13 @@ public class GamePanel extends JPanel implements KeyListener {
                         board = new GameBoard(mode);
                         gameOverSoundPlayed = false;
                         gameState = GameState.PLAYING;
-                        backgroundMusic = new SoundPlayer("../java-B11207030-Eason-B11207042-Tony/music/tetris_theme.wav", volumePercent);
+                        backgroundMusic = new SoundPlayer("java-B11207030-Eason-B11207042-Tony/music/tetris_theme.wav", volumePercent);
                     }
                     case KeyEvent.VK_ENTER, KeyEvent.VK_ESCAPE -> {
                         gameState = GameState.MENU;
+                        backgroundMusic = new SoundPlayer("java-B11207030-Eason-B11207042-Tony/music/tetris_theme.wav", volumePercent);
                     }
+                    
                 }
             }
             case PLAYING -> {
