@@ -13,6 +13,7 @@ public class GameBoard {
     private Block nextBlock;
     private Random random = new Random();
     private int score = 0;
+    private int clearline = 0;
     private boolean gameOver = false;
     //消除動畫用參數
     private java.util.List<Integer> linesToClear = new ArrayList<>();
@@ -72,6 +73,20 @@ public class GameBoard {
                 }
             }
         }
+
+        // Draw ghost block (drop preview)
+        Block ghostBlock = getGhostBlock();
+        if (ghostBlock != null) {
+            for (Point p : ghostBlock.getAbsolutePoints()) {
+                g.setColor(getBlockColor(currentBlock)); // 與目前方塊同色
+                ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f)); // 半透明
+                g.fillRect(p.x * CELL_SIZE, p.y * CELL_SIZE + offsetY, BLOCK_SIZE, BLOCK_SIZE);
+                g.setColor(Color.GRAY);
+                g.drawRect(p.x * CELL_SIZE, p.y * CELL_SIZE + offsetY, BLOCK_SIZE, BLOCK_SIZE);
+            }
+            ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f)); // 恢復不透明
+        }
+
         // Draw current block
         if (currentBlock != null) {  
             for (Point p : currentBlock.getAbsolutePoints()) {
@@ -125,9 +140,7 @@ public class GameBoard {
         currentBlock = nextBlock;
         nextBlock = generateRandomBlock();
         holdUsed = false;
-        if (currentBlock == null || !isValidPosition(currentBlock)) {
-            gameOver = true;
-        }
+        checkGameOver();
     }
     
     public void holdCurrentBlock() {
@@ -146,6 +159,21 @@ public class GameBoard {
        holdUsed = true;
     }
 
+private Block getGhostBlock() {
+    if (currentBlock == null) return null;
+
+    Block ghost = currentBlock.clone(); // 假設 Block 有正確實作 clone()
+    while (true) {
+        ghost.move(0, 1);
+        if (!isValidPosition(ghost)) {
+            ghost.move(0, -1); // 回到最後合法位置
+            break;
+        }
+    }
+    return ghost;
+}
+
+
     private Block generateRandomBlock() {
         int type = random.nextInt(7);
         return switch (type) {
@@ -159,19 +187,6 @@ public class GameBoard {
             default -> null;
         };
     }
-    
-    public Block getHoldBlock() {
-        return holdBlock;
-    }
-    
-    public Block getCurrentBlock() {
-        return currentBlock;
-    }
-
-    public Block getNextBlock() {
-        return nextBlock;
-    }
-    
 
     public boolean isValidPosition(Block block) {
         if (block == null || block.getAbsolutePoints() == null) return false;
@@ -236,7 +251,6 @@ public class GameBoard {
 
     public void dropBlock() {
         if (gameOver || currentBlock == null) return;
-    
         while (true) {
             currentBlock.move(0, 1);
             if (!isValidPosition(currentBlock)) {
@@ -284,11 +298,15 @@ public class GameBoard {
             case 4 -> 800;
             default -> 0;
         };
-    
+        clearline += linesCleared;
+
         linesToClear.clear();
     }
     
     public void insertBottomRow() {
+        checkGameOver(); 
+        if (gameOver) return;
+
         // 將所有行上移
         for (int y = 0; y < grid.length - 1; y++) {
             grid[y] = grid[y + 1].clone();
@@ -303,9 +321,41 @@ public class GameBoard {
         grid[grid.length - 1] = newRow;
     }
 
+    private void checkGameOver() {
+        if ("Challenge".equals(mode)) {
+            // 若最上面一行有方塊，代表被擠到最上方 → Game Over
+            for (int x = 0; x < BOARD_WIDTH; x++) {
+                if (grid[0][x] != 0) {
+                    gameOver = true;
+                    return;
+                }
+            }
+        } else {
+            // 普通模式：如果新方塊無法放置 → Game Over
+            if (currentBlock != null && !isValidPosition(currentBlock)) {
+                gameOver = true;
+            }
+        }
+    }
+
+    public Block getHoldBlock() {
+        return holdBlock;
+    }
+    
+    public Block getCurrentBlock() {
+        return currentBlock;
+    }
+
+    public Block getNextBlock() {
+        return nextBlock;
+    }
 
     public int getScore() {
         return score;
+    }
+
+    public int getclearline() {
+        return clearline;
     }
 
     public boolean isGameOver() {
