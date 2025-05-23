@@ -159,20 +159,19 @@ public class GameBoard {
        holdUsed = true;
     }
 
-private Block getGhostBlock() {
-    if (currentBlock == null) return null;
+    private Block getGhostBlock() {
+        if (currentBlock == null) return null;
 
-    Block ghost = currentBlock.clone(); // 假設 Block 有正確實作 clone()
-    while (true) {
-        ghost.move(0, 1);
-        if (!isValidPosition(ghost)) {
-            ghost.move(0, -1); // 回到最後合法位置
-            break;
+        Block ghost = currentBlock.clone(); // 假設 Block 有正確實作 clone()
+        while (true) {
+            ghost.move(0, 1);
+            if (!isValidPosition(ghost)) {
+                ghost.move(0, -1); // 回到最後合法位置
+                break;
+            }
         }
+        return ghost;
     }
-    return ghost;
-}
-
 
     private Block generateRandomBlock() {
         int type = random.nextInt(7);

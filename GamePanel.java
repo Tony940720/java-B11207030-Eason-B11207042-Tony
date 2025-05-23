@@ -1,12 +1,19 @@
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.AttributeSet;
+
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 public class GamePanel extends JPanel{ 
     private static final int CELL_SIZE = 30;
     private static final int BLOCK_SIZE = 28;
 
-    public enum GameState { MENU, PLAYING, PAUSED, GAME_OVER }
+    public enum GameState { MENU, PLAYING, PAUSED, GAME_OVER, HIGHSCORES }
     private GameState gameState = GameState.MENU;
 
     private GameBoard board;
@@ -14,6 +21,7 @@ public class GamePanel extends JPanel{
     private javax.swing.Timer gravityTimer;
     SoundPlayer backgroundMusic;
     private boolean gameOverSoundPlayed = false;
+    private long lastRowInsertTime = System.currentTimeMillis();
 
     // 設定選單選項
     private int selectedOption = 0;
@@ -37,7 +45,6 @@ public class GamePanel extends JPanel{
         repaintTimer.start();
 
         gravityTimer = new javax.swing.Timer(getAdjustedDelay(0), new ActionListener() {
-            private long lastRowInsertTime = System.currentTimeMillis();
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -46,13 +53,15 @@ public class GamePanel extends JPanel{
 
                     if (mode.equals("Challenge")) {
                         long now = System.currentTimeMillis();
-                        if (now - lastRowInsertTime >= 7000) {
+                        if (now - lastRowInsertTime >= 10000) {
                             board.insertBottomRow();
                             lastRowInsertTime = now;
                         }
                     }
 
                     if (board.isGameOver()) {
+                        String name = promptForName();
+                        HighScoreManager.addScore(name, board.getScore());
                         gameState = GameState.GAME_OVER;
                         stopBackgroundMusic();
                         if (!gameOverSoundPlayed) {
@@ -75,6 +84,7 @@ public class GamePanel extends JPanel{
             case MENU -> drawMenu(g);
             case PLAYING, PAUSED -> drawGame(g);
             case GAME_OVER -> drawGameOver(g);
+            case HIGHSCORES -> drawHighScores(g);
         }
         // 額外處理暫停畫面
         if (gameState == GameState.PAUSED) {
@@ -86,6 +96,11 @@ public class GamePanel extends JPanel{
             g2d.setFont(new Font("Arial", Font.BOLD, 36));
             g2d.drawString("PAUSED", getWidth() / 2 - 80, getHeight() / 2);
             g2d.dispose();
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.PLAIN, 24));
+            g.drawString("Press R to Restart", 140, 450);
+            g.drawString("Press ESC to Menu", 133, 510);
         }
     }
 
@@ -95,21 +110,22 @@ public class GamePanel extends JPanel{
 
         g.setColor(Color.CYAN);
         g.setFont(new Font("Arial", Font.BOLD, 48));
-        g.drawString("TETRIS", 80, 100);
+        g.drawString("TETRIS", 150, 150);
 
         g.setFont(new Font("Arial", Font.PLAIN, 24));
 
         String[] options = {
+            "  High Scores",
             "Volume: " + volumePercent + "%",
             "Speed: " + (speedLevel == 0 ? "Slow" : speedLevel == 1 ? "Normal" : "Fast"),
             "Mode: " + mode,
-            "Start Game"
+            "  Start Game"
         };
 
         for (int i = 0; i < options.length; i++) {
             if (i == selectedOption) g.setColor(Color.YELLOW);
             else g.setColor(Color.WHITE);
-            g.drawString(options[i], 60, 180 + i * 40);
+            g.drawString(options[i], 150, 250 + i * 40);
         }
     }
 
@@ -119,11 +135,11 @@ public class GamePanel extends JPanel{
 
         g.setColor(Color.RED);
         g.setFont(new Font("Arial", Font.BOLD, 36));
-        g.drawString("Game Over", 80, 250);
+        g.drawString("Game Over", 150, 250);
 
         g.setFont(new Font("Arial", Font.PLAIN, 24));
-        g.drawString("Press R to Restart", 70, 310);
-        g.drawString("Press ESC to Menu", 70, 370);
+        g.drawString("Press R to Restart", 150, 310);
+        g.drawString("Press ESC to Menu", 143, 370);
     }
 
     private void drawGame(Graphics g) {
@@ -174,6 +190,31 @@ public class GamePanel extends JPanel{
         }
     }
 
+    private void drawHighScores(Graphics g) {
+        g.setColor(new Color(30, 30, 47));
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Consolas", Font.BOLD, 32));
+        g.drawString("High Scores", 140, 100);
+
+        List<HighScoreManager.ScoreEntry> scores = HighScoreManager.loadScores();
+        g.setFont(new Font("Consolas", Font.PLAIN, 22));
+
+        for (int i = 0; i < scores.size(); i++) {
+            HighScoreManager.ScoreEntry entry = scores.get(i);
+            String line = String.format("%2d. %-10s %6d", i + 1, entry.name, entry.score);
+
+            // 設定前三名顏色
+            if (i == 0) g.setColor(new Color(255, 215, 0));      // 金
+            else if (i == 1) g.setColor(new Color(192, 192, 192)); // 銀
+            else if (i == 2) g.setColor(new Color(205, 127, 50));  // 銅
+            else g.setColor(Color.GRAY);
+
+            g.drawString(line, 100, 150 + i * 30);
+        }
+    }
+    
     private Color getBlockColor(Block block) {
         if (block instanceof IBlock) return Color.CYAN;
         if (block instanceof JBlock) return Color.BLUE;
@@ -217,6 +258,43 @@ public class GamePanel extends JPanel{
         }
     }
 
+    public String promptForName() {
+        JTextField textField = new JTextField();
+
+        // 限制輸入長度為 5
+        ((AbstractDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                    throws BadLocationException {
+                if (fb.getDocument().getLength() + string.length() <= 5) {
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                    throws BadLocationException {
+                if (fb.getDocument().getLength() - length + text.length() <= 5) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        });
+
+        int result = JOptionPane.showConfirmDialog(
+            null,
+            textField,
+            "Game Over! Enter your name (max 5 letters):",
+            JOptionPane.OK_CANCEL_OPTION
+        );
+
+        String input = textField.getText().trim();
+        if (result == JOptionPane.OK_OPTION && !input.isEmpty()) {
+            return input;
+        } else {
+            return "nickname"; // 預設名字
+        }
+    }
+    
     // Getter methods for InputHandler
     public GameState getGameState() { return gameState; }
     public void setGameState(GameState newState) { gameState = newState; }
@@ -244,5 +322,9 @@ public class GamePanel extends JPanel{
     }
 
     public GameBoard getBoard() { return board; }
+
+    public void setlastRowInsertTime(long t){
+        lastRowInsertTime = t;
+    }
 
 }

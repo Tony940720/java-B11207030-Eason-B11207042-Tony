@@ -14,41 +14,46 @@ public class InputHandler implements KeyListener {
             case PLAYING -> handlePlayingInput(e);
             case PAUSED -> handlePauseInput(e);
             case GAME_OVER -> handleGameOverInput(e);
+            case HIGHSCORES -> handleHighScoresInput(e);
         }
     }
 
     private void handleMenuInput(KeyEvent e) {
         int selected = gamePanel.getSelectedOption();
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> gamePanel.setSelectedOption((selected + 3) % 4);
-            case KeyEvent.VK_DOWN -> gamePanel.setSelectedOption((selected + 1) % 4);
+            case KeyEvent.VK_UP -> gamePanel.setSelectedOption((selected + 4) % 5);
+            case KeyEvent.VK_DOWN -> gamePanel.setSelectedOption((selected + 1) % 5);
             case KeyEvent.VK_LEFT -> {
                 switch (selected) {
-                    case 0 -> {
+                    case 1 -> {
                         int v = Math.max(0, gamePanel.getVolumePercent() - 10);
                         gamePanel.setVolumePercent(v);
                     }
-                    case 1 -> gamePanel.setSpeedLevel(Math.max(0, gamePanel.getSpeedLevel() - 1));
-                    case 2 -> gamePanel.setMode(gamePanel.getMode().equals("Normal") ? "Challenge" : "Normal");
+                    case 2 -> gamePanel.setSpeedLevel(Math.max(0, gamePanel.getSpeedLevel() - 1));
+                    case 3 -> gamePanel.setMode(gamePanel.getMode().equals("Normal") ? "Challenge" : "Normal");
                 }
             }
             case KeyEvent.VK_RIGHT -> {
                 switch (selected) {
-                    case 0 -> {
+                    case 1 -> {
                         int v = Math.min(100, gamePanel.getVolumePercent() + 10);
                         gamePanel.setVolumePercent(v);
                         SoundPlayer.setGlobalVolume(v);
                     }
-                    case 1 -> gamePanel.setSpeedLevel(Math.min(2, gamePanel.getSpeedLevel() + 1));
-                    case 2 -> gamePanel.setMode(gamePanel.getMode().equals("Normal") ? "Challenge" : "Normal");
+                    case 2 -> gamePanel.setSpeedLevel(Math.min(2, gamePanel.getSpeedLevel() + 1));
+                    case 3 -> gamePanel.setMode(gamePanel.getMode().equals("Normal") ? "Challenge" : "Normal");
                 }
             }
             case KeyEvent.VK_ENTER -> {
-                if (selected == 3) {
+                if (selected == 0) {
+                    gamePanel.setGameState(GamePanel.GameState.HIGHSCORES);
+                }
+                else if (selected == 4) {
                     gamePanel.resetGameBoard();
                     gamePanel.setGameState(GamePanel.GameState.PLAYING);
                 }
             }
+            case KeyEvent.VK_H -> gamePanel.setGameState(GamePanel.GameState.HIGHSCORES);
         }
     }
 
@@ -71,6 +76,15 @@ public class InputHandler implements KeyListener {
     private void handlePauseInput(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_P) {
             gamePanel.setGameState(GamePanel.GameState.PLAYING);
+            gamePanel.setlastRowInsertTime(System.currentTimeMillis());
+        }
+        else if (e.getKeyCode()== KeyEvent.VK_ESCAPE) {
+            gamePanel.setGameState(GamePanel.GameState.MENU);
+        }
+        else if (e.getKeyCode()== KeyEvent.VK_R) {
+            gamePanel.resetGameBoard();
+            gamePanel.setGameState(GamePanel.GameState.PLAYING);
+            gamePanel.playBackgroundMusic();
         }
     }
 
@@ -88,6 +102,11 @@ public class InputHandler implements KeyListener {
         }
     }
 
+    private void handleHighScoresInput(KeyEvent e){
+         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            gamePanel.setGameState(GamePanel.GameState.MENU);
+        }
+    }
     @Override public void keyReleased(KeyEvent e) {}
     @Override public void keyTyped(KeyEvent e) {}
 }
