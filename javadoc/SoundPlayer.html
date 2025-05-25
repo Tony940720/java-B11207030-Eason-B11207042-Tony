@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class SoundPlayer</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2em; background: #f9f9f9; }
+        h1 { color: #2c3e50; }
+        code { background: #eee; padding: 2px 4px; border-radius: 3px; }
+        pre { background: #eee; padding: 1em; border-radius: 5px; overflow-x: auto; }
+        .section { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <h1>Class SoundPlayer</h1>
+
+    <div class="section">
+        <h2>Package</h2>
+        <p><code>(default package)</code></p>
+    </div>
+
+    <div class="section">
+        <h2>Description</h2>
+        <p>Handles background music and sound effects playback using Java Sound API. Supports global and per-instance volume control, and both looped and one-time playback.</p>
+    </div>
+
+    <div class="section">
+        <h2>Constructor Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Constructor</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>SoundPlayer(String filePath)</code></td>
+                <td>Creates a new looped sound player using the global volume.</td>
+            </tr>
+            <tr>
+                <td><code>SoundPlayer(String filePath, int volumePercent)</code></td>
+                <td>Creates a new looped sound player with a specified volume.</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Method Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Modifier and Type</th>
+                <th>Method</th>
+                <th>Description</th>
+            </tr>
+            <tr><td><code>public static void</code></td><td><code>setGlobalVolume(int percent)</code></td><td>Sets the global volume (0–100%).</td></tr>
+            <tr><td><code>public static int</code></td><td><code>getGlobalVolume()</code></td><td>Returns the current global volume.</td></tr>
+            <tr><td><code>public static void</code></td><td><code>playSoundOnce(String filePath)</code></td><td>Plays a sound effect once using global volume.</td></tr>
+            <tr><td><code>public static void</code></td><td><code>playSoundOnce(String filePath, int volumePercent)</code></td><td>Plays a sound effect once using specified volume.</td></tr>
+            <tr><td><code>public void</code></td><td><code>setVolume(int percent)</code></td><td>Sets the volume for this sound player instance.</td></tr>
+            <tr><td><code>public void</code></td><td><code>stop()</code></td><td>Stops the looped playback.</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Fields</h2>
+        <ul>
+            <li><code>private static int globalVolumePercent</code> – Global volume for all players and static playback.</li>
+            <li><code>private Clip clip</code> – Audio clip used for playback.</li>
+            <li><code>private int instanceVolume</code> – Volume level for this instance.</li>
+        </ul>
+    </div>
+
+    <hr>
+</body>
+</html>

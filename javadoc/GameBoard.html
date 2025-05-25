@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class GameBoard</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2em; background: #f9f9f9; }
+        h1 { color: #2c3e50; }
+        code { background: #eee; padding: 2px 4px; border-radius: 3px; }
+        pre { background: #eee; padding: 1em; border-radius: 5px; overflow-x: auto; }
+        .section { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <h1>Class GameBoard</h1>
+
+    <div class="section">
+        <h2>Package</h2>
+        <p><code>(default package)</code></p>
+    </div>
+
+    <div class="section">
+        <h2>Description</h2>
+        <p>Manages the Tetris game state, including the board grid, block movement, rotation, line clearing, scoring, ghost preview, hold mechanism, and challenge mode. It also handles rendering and game-over detection.</p>
+    </div>
+
+    <div class="section">
+        <h2>Constructor Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Constructor</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>GameBoard()</code></td>
+                <td>Initializes a new GameBoard with default "Normal" mode.</td>
+            </tr>
+            <tr>
+                <td><code>GameBoard(String mode)</code></td>
+                <td>Initializes a new GameBoard with the specified game mode ("Normal" or "Challenge").</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Method Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Modifier and Type</th>
+                <th>Method</th>
+                <th>Description</th>
+            </tr>
+            <tr><td><code>public void</code></td><td><code>update()</code></td><td>Updates the game logic including block falling and line clearing.</td></tr>
+            <tr><td><code>public void</code></td><td><code>draw(Graphics g)</code></td><td>Draws the game board, blocks, ghost block, and grid lines.</td></tr>
+            <tr><td><code>public void</code></td><td><code>moveBlock(int dx, int dy)</code></td><td>Moves the current block horizontally or vertically.</td></tr>
+            <tr><td><code>public void</code></td><td><code>rotateBlock()</code></td><td>Rotates the current block clockwise with wall kicks.</td></tr>
+            <tr><td><code>public void</code></td><td><code>rotateBlockBack()</code></td><td>Rotates the current block counter-clockwise with wall kicks.</td></tr>
+            <tr><td><code>public void</code></td><td><code>dropBlock()</code></td><td>Drops the current block to the lowest valid position.</td></tr>
+            <tr><td><code>public void</code></td><td><code>holdCurrentBlock()</code></td><td>Holds the current block for later use or swaps with held block.</td></tr>
+            <tr><td><code>public void</code></td><td><code>insertBottomRow()</code></td><td>Adds a challenge row at the bottom, pushing the board up.</td></tr>
+            <tr><td><code>public boolean</code></td><td><code>isValidPosition(Block block)</code></td><td>Checks if a block's position is valid on the board.</td></tr>
+            <tr><td><code>public boolean</code></td><td><code>isGameOver()</code></td><td>Returns whether the game is over.</td></tr>
+            <tr><td><code>public Block</code></td><td><code>getCurrentBlock()</code></td><td>Returns the current falling block.</td></tr>
+            <tr><td><code>public Block</code></td><td><code>getNextBlock()</code></td><td>Returns the next block to be spawned.</td></tr>
+            <tr><td><code>public Block</code></td><td><code>getHoldBlock()</code></td><td>Returns the currently held block.</td></tr>
+            <tr><td><code>public int</code></td><td><code>getScore()</code></td><td>Returns the current score.</td></tr>
+            <tr><td><code>public int</code></td><td><code>getclearline()</code></td><td>Returns the number of lines cleared.</td></tr>
+            <tr><td><code>public String</code></td><td><code>getMode()</code></td><td>Returns the current game mode.</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Mode Support</h2>
+        <p>The game supports two modes:</p>
+        <ul>
+            <li><strong>Normal:</strong> Standard gameplay with falling blocks and line clearing.</li>
+            <li><strong>Challenge:</strong> Periodically inserts new rows at the bottom, increasing difficulty.</li>
+        </ul>
+    </div>
+
+    <hr>
+</body>
+</html>

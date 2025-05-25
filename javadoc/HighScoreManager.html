@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class HighScoreManager</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2em; background: #f9f9f9; }
+        h1 { color: #2c3e50; }
+        code { background: #eee; padding: 2px 4px; border-radius: 3px; }
+        pre { background: #eee; padding: 1em; border-radius: 5px; overflow-x: auto; }
+        .section { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <h1>Class HighScoreManager</h1>
+
+    <div class="section">
+        <h2>Package</h2>
+        <p><code>(default package)</code></p>
+    </div>
+
+    <div class="section">
+        <h2>Description</h2>
+        <p>
+            Manages the reading, writing, and sorting of high scores for the Tetris game.
+            Handles persistent storage of top scores in a file and provides access to them via a static API.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Constant Summary</h2>
+        <ul>
+            <li><code>FILE_NAME</code>: Path to the score file (<code>"java-B11207030-Eason-B11207042-Tony/scores.txt"</code>).</li>
+            <li><code>MAX_SCORES</code>: Maximum number of scores to store (10).</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Constructor Summary</h2>
+        <p><i>This class has no public constructor. All methods are static.</i></p>
+    </div>
+
+    <div class="section">
+        <h2>Method Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Modifier and Type</th>
+                <th>Method</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>public static void</code></td>
+                <td><code>addScore(String name, int score)</code></td>
+                <td>Adds a new score to the list, sorts it in descending order, and saves it.</td>
+            </tr>
+            <tr>
+                <td><code>public static List&lt;ScoreEntry&gt;</code></td>
+                <td><code>loadScores()</code></td>
+                <td>Loads and returns the list of saved scores from file.</td>
+            </tr>
+            <tr>
+                <td><code>private static void</code></td>
+                <td><code>saveScores(List&lt;ScoreEntry&gt; scores)</code></td>
+                <td>Saves the given list of scores to the file in CSV format.</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Nested Class Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Modifier and Type</th>
+                <th>Class</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>public static class</code></td>
+                <td><code>ScoreEntry</code></td>
+                <td>Simple data structure representing a score record with name and score.</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>ScoreEntry Field Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Modifier and Type</th>
+                <th>Field</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>public String</code></td>
+                <td><code>name</code></td>
+                <td>The player's name associated with the score.</td>
+            </tr>
+            <tr>
+                <td><code>public int</code></td>
+                <td><code>score</code></td>
+                <td>The numeric score achieved by the player.</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Usage Example</h2>
+        <pre>
+HighScoreManager.addScore("ABC", 12345);
+List&lt;HighScoreManager.ScoreEntry&gt; scores = HighScoreManager.loadScores();
+for (HighScoreManager.ScoreEntry entry : scores) {
+    System.out.println(entry.name + " - " + entry.score);
+}
+        </pre>
+    </div>
+
+    <hr>
+</body>
+</html>

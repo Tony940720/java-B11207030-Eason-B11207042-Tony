@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Block Class</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2em; background: #f9f9f9; }
+        h1 { color: #2c3e50; }
+        code { background: #eee; padding: 2px 4px; border-radius: 3px; }
+        pre { background: #eee; padding: 1em; border-radius: 5px; overflow-x: auto; }
+        .section { margin-bottom: 2em; }
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 6px 10px; }
+        th { background: #ddd; }
+    </style>
+</head>
+<body>
+    <h1>Class Block</h1>
+
+    <div class="section">
+        <h2>Package</h2>
+        <p><code>(default package)</code></p>
+    </div>
+
+    <div class="section">
+        <h2>Description</h2>
+        <p>An abstract representation of a Tetris block. Handles rotation, movement, cloning, and position resetting.</p>
+    </div>
+
+    <div class="section">
+        <h2>Field Summary</h2>
+        <table>
+            <tr><th>Modifier and Type</th><th>Field</th><th>Description</th></tr>
+            <tr><td><code>protected Point[]</code></td><td><code>shape</code></td><td>The relative coordinates describing the block’s shape.</td></tr>
+            <tr><td><code>protected Point</code></td><td><code>position</code></td><td>The current (x, y) position of the block on the board.</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Constructor Summary</h2>
+        <p>No public constructors defined (abstract class).</p>
+    </div>
+
+    <div class="section">
+        <h2>Method Summary</h2>
+        <table>
+            <tr><th>Modifier and Type</th><th>Method</th><th>Description</th></tr>
+            <tr><td><code>public abstract void</code></td><td><code>rotate()</code></td><td>Rotates the block clockwise (implementation provided by concrete subclasses).</td></tr>
+            <tr><td><code>public abstract void</code></td><td><code>rotateBack()</code></td><td>Rotates the block counter‑clockwise (implementation provided by concrete subclasses).</td></tr>
+            <tr><td><code>public void</code></td><td><code>move(int dx, int dy)</code></td><td>Translates the block’s position by <code>dx</code>, <code>dy</code>.</td></tr>
+            <tr><td><code>public Point[]</code></td><td><code>getAbsolutePoints()</code></td><td>Returns the absolute board coordinates of the block’s squares.</td></tr>
+            <tr><td><code>public Block</code></td><td><code>clone()</code></td><td>Creates a deep copy of this block.</td></tr>
+            <tr><td><code>public void</code></td><td><code>resetPosition()</code></td><td>Resets the block’s position to the spawn point (x = 4, y = ‑2).</td></tr>
+            <tr><td><code>public Point[]</code></td><td><code>getShape()</code></td><td>Returns the relative shape coordinates.</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Method Detail</h2>
+        <h3><code>move</code></h3>
+        <pre>public void move(int dx, int dy)</pre>
+        <p>Moves the block by the specified offset.</p>
+        <ul>
+            <li><strong>Parameters:</strong> <code>dx</code> – horizontal offset; <code>dy</code> – vertical offset.</li>
+        </ul>
+
+        <h3><code>getAbsolutePoints</code></h3>
+        <pre>public Point[] getAbsolutePoints()</pre>
+        <p>Computes the absolute coordinates on the board for each square.</p>
+
+        <h3><code>clone</code></h3>
+        <pre>public Block clone()</pre>
+        <p>Performs a deep clone of the block, duplicating position and shape array.</p>
+
+        <h3><code>resetPosition</code></h3>
+        <pre>public void resetPosition()</pre>
+        <p>Repositions the block to its initial spawn location.</p>
+    </div>
+
+    <hr>
+</body>
+</html>
