@@ -291,7 +291,7 @@ public class GamePanel extends JPanel{
         if (result == JOptionPane.OK_OPTION && !input.isEmpty()) {
             return input;
         } else {
-            return "nickname"; // 預設名字
+            return "unknown"; // 預設名字
         }
     }
     
