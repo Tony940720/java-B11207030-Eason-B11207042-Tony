@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class HighScoreManager {
-    private static final String FILE_NAME = "scores.txt";
+    private static final String FILE_NAME = "java-B11207030-Eason-B11207042-Tony/scores.txt";
     private static final int MAX_SCORES = 10;
 
     public static void addScore(String name, int score) {
@@ -41,4 +41,5 @@ public class HighScoreManager {
             this.score = score;
         }
     }
+
 }

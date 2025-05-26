@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class GamePanel</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2em; background: #f9f9f9; }
+        h1 { color: #2c3e50; }
+        code { background: #eee; padding: 2px 4px; border-radius: 3px; }
+        pre { background: #eee; padding: 1em; border-radius: 5px; overflow-x: auto; }
+        .section { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <h1>Class GamePanel</h1>
+
+    <div class="section">
+        <h2>Package</h2>
+        <p><code>(default package)</code></p>
+    </div>
+
+    <div class="section">
+        <h2>Description</h2>
+        <p>
+            Represents the main panel for the Tetris game. Handles rendering, user input, game state transitions,
+            background music, and menu selections. It integrates the game logic (via GameBoard), handles drawing game elements,
+            and manages high scores and game modes.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Constructor Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Constructor</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>GamePanel()</code></td>
+                <td>Initializes the game panel, sets up key listeners, and prepares the game environment.</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Method Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Modifier and Type</th>
+                <th>Method</th>
+                <th>Description</th>
+            </tr>
+            <tr><td><code>public void</code></td><td><code>startGame()</code></td><td>Begins the game, sets up timers and background music.</td></tr>
+            <tr><td><code>public void</code></td><td><code>paintComponent(Graphics g)</code></td><td>Renders the panel based on the current game state.</td></tr>
+            <tr><td><code>public void</code></td><td><code>stopBackgroundMusic()</code></td><td>Stops the currently playing background music.</td></tr>
+            <tr><td><code>public void</code></td><td><code>playBackgroundMusic()</code></td><td>Plays the background music track.</td></tr>
+            <tr><td><code>public void</code></td><td><code>resetGameBoard()</code></td><td>Resets the game board and game-over state.</td></tr>
+            <tr><td><code>public void</code></td><td><code>setlastRowInsertTime(long t)</code></td><td>Sets the last time a challenge row was inserted.</td></tr>
+            <tr><td><code>public String</code></td><td><code>promptForName()</code></td><td>Displays a dialog prompting for player name (max 5 chars) after game over.</td></tr>
+
+            <tr><td><code>public GameState</code></td><td><code>getGameState()</code></td><td>Returns the current game state.</td></tr>
+            <tr><td><code>public void</code></td><td><code>setGameState(GameState state)</code></td><td>Sets the current game state.</td></tr>
+            <tr><td><code>public int</code></td><td><code>getSelectedOption()</code></td><td>Returns the currently selected menu option index.</td></tr>
+            <tr><td><code>public void</code></td><td><code>setSelectedOption(int option)</code></td><td>Sets the selected menu option.</td></tr>
+            <tr><td><code>public int</code></td><td><code>getVolumePercent()</code></td><td>Returns the current volume percentage.</td></tr>
+            <tr><td><code>public void</code></td><td><code>setVolumePercent(int volume)</code></td><td>Sets the volume and applies it to music.</td></tr>
+            <tr><td><code>public int</code></td><td><code>getSpeedLevel()</code></td><td>Returns the current speed level (0: Slow, 1: Normal, 2: Fast).</td></tr>
+            <tr><td><code>public void</code></td><td><code>setSpeedLevel(int level)</code></td><td>Sets the game speed level.</td></tr>
+            <tr><td><code>public String</code></td><td><code>getMode()</code></td><td>Returns the current game mode ("Normal" or "Challenge").</td></tr>
+            <tr><td><code>public void</code></td><td><code>setMode(String mode)</code></td><td>Sets the game mode.</td></tr>
+            <tr><td><code>public GameBoard</code></td><td><code>getBoard()</code></td><td>Returns the current game board instance.</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Game States</h2>
+        <ul>
+            <li><strong>MENU</strong>: Main menu screen</li>
+            <li><strong>PLAYING</strong>: Game is in progress</li>
+            <li><strong>PAUSED</strong>: Game is paused with overlay</li>
+            <li><strong>GAME_OVER</strong>: Game over screen after loss</li>
+            <li><strong>HIGHSCORES</strong>: Displays high scores leaderboard</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Modes</h2>
+        <ul>
+            <li><strong>Normal:</strong> Regular gameplay without challenge rows.</li>
+            <li><strong>Challenge:</strong> Adds a new row every 10 seconds to increase difficulty.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Speed Levels</h2>
+        <ul>
+            <li><strong>0 - Slow</strong>: Blocks fall slower</li>
+            <li><strong>1 - Normal</strong>: Default speed</li>
+            <li><strong>2 - Fast</strong>: Blocks fall quickly</li>
+        </ul>
+    </div>
+
+    <hr>
+</body>
+</html>

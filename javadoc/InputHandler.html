@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class InputHandler</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2em; background: #f9f9f9; }
+        h1 { color: #2c3e50; }
+        code { background: #eee; padding: 2px 4px; border-radius: 3px; }
+        pre { background: #eee; padding: 1em; border-radius: 5px; overflow-x: auto; }
+        .section { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <h1>Class InputHandler</h1>
+
+    <div class="section">
+        <h2>Package</h2>
+        <p><code>(default package)</code></p>
+    </div>
+
+    <div class="section">
+        <h2>Description</h2>
+        <p>Handles keyboard input for the Tetris game, processing keys depending on the current game state. Supports navigation in menus, controlling falling blocks during gameplay, and managing state transitions such as pause, resume, and game over.</p>
+    </div>
+
+    <div class="section">
+        <h2>Constructor Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Constructor</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>InputHandler(GamePanel panel)</code></td>
+                <td>Initializes the input handler with reference to the main game panel.</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Method Summary</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr style="background:#ddd;">
+                <th>Modifier and Type</th>
+                <th>Method</th>
+                <th>Description</th>
+            </tr>
+            <tr><td><code>public void</code></td><td><code>keyPressed(KeyEvent e)</code></td><td>Delegates key input based on the current game state.</td></tr>
+            <tr><td><code>private void</code></td><td><code>handleMenuInput(KeyEvent e)</code></td><td>Processes key input in the main menu (navigate options, change settings, start game).</td></tr>
+            <tr><td><code>private void</code></td><td><code>handlePlayingInput(KeyEvent e)</code></td><td>Processes gameplay controls (move, rotate, drop, hold, pause).</td></tr>
+            <tr><td><code>private void</code></td><td><code>handlePauseInput(KeyEvent e)</code></td><td>Handles unpausing, returning to menu, or restarting the game.</td></tr>
+            <tr><td><code>private void</code></td><td><code>handleGameOverInput(KeyEvent e)</code></td><td>Handles input after the game ends (restart or return to menu).</td></tr>
+            <tr><td><code>private void</code></td><td><code>handleHighScoresInput(KeyEvent e)</code></td><td>Allows user to return from high score screen to menu.</td></tr>
+            <tr><td><code>public void</code></td><td><code>keyReleased(KeyEvent e)</code></td><td>Unused. Required by <code>KeyListener</code> interface.</td></tr>
+            <tr><td><code>public void</code></td><td><code>keyTyped(KeyEvent e)</code></td><td>Unused. Required by <code>KeyListener</code> interface.</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Game State Key Mapping</h2>
+        <ul>
+            <li><strong>MENU:</strong> Navigate (↑↓), Adjust settings (←→), Enter, H</li>
+            <li><strong>PLAYING:</strong> A/D (left/right), S (down), W/Q (rotate), SPACE (drop), E (hold), P (pause)</li>
+            <li><strong>PAUSED:</strong> P (resume), ESC (menu), R (restart)</li>
+            <li><strong>GAME_OVER:</strong> R (restart), ENTER/ESC (menu)</li>
+            <li><strong>HIGHSCORES:</strong> ESC (return to menu)</li>
+        </ul>
+    </div>
+
+    <hr>
+</body>
+</html>
